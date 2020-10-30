@@ -9,21 +9,53 @@ import UIKit
 
 class MainPageViewController: UIViewController {
 
+    
+    // MARK: -Properties
+    
+    private var rssItems: [RSSItem]?
+    private let url: String = "https://news.tut.by/rss/index.rss"
+    
+    
+    // MARK: -Methods
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
 
-        // Do any additional setup after loading the view.
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        setup()
     }
     
+    func reloadData() {
+        for item in rssItems! {
+//            print(item.title)
+//            print(item.description)
+//            print(item.descriptionImages)
+//            print(item.mediaImages)
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        }
     }
-    */
-
+    
+    private func setup() {
+        NewsManager.shared.getFeed(url: url) { feedInXml in
+            XMLParseManager.shared.parseXml(data: feedInXml) { rssItems in
+                self.rssItems = rssItems
+                
+                // что-то обновляем
+                for item in (self.rssItems)! {
+//                    print(item.title)
+//                    print(item.description)
+//                    print(item.descriptionImages)
+//                    print(item.mediaImages)
+                    
+                    
+                    // pltcь добавление в кордату
+                    
+                    self.reloadData()
+                }
+            }
+        }
+    }
 }
