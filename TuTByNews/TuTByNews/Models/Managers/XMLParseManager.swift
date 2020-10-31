@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class XMLParseManager: NSObject, XMLParserDelegate {
     
@@ -16,16 +17,15 @@ class XMLParseManager: NSObject, XMLParserDelegate {
     private var rssItems: [RSSItem] = []
     private var currentItem: String = ""
     private var itemTitle: String = ""
+    private var itemPubDate: String = ""
+    private var descriptionImage: String = ""
+    private var mediaImages: [String] = []
+    private var parseCompletionHandler: (() -> Void)?
     private var itemDescription: String = "" {
         didSet {
             itemDescription = cleanDescription(string: itemDescription)
-            print(itemDescription)
         }
     }
-    private var itemPubDate: String = ""
-    private var descriptionImages: [String] = []
-    private var mediaImages: [String] = []
-    private var parseCompletionHandler: (([RSSItem]) -> Void)?
     
 
     // MARK: -Methods
@@ -36,7 +36,7 @@ class XMLParseManager: NSObject, XMLParserDelegate {
         return cleanedDescription
     }
     
-    func parseXml(data: Data, completion: (([RSSItem]) -> Void)?) {
+    func parseXml(data: Data, completion: (() -> Void)?) {
         let xmlParser = XMLParser(data: data)
         xmlParser.delegate = self
         parseCompletionHandler = completion
@@ -50,11 +50,11 @@ class XMLParseManager: NSObject, XMLParserDelegate {
             itemTitle = ""
             itemDescription = ""
             itemPubDate = ""
-            descriptionImages.removeAll()
+            descriptionImage = ""
             mediaImages.removeAll()
         } else if elementName == "enclosure" {
             if let url = attributeDict["url"] {
-                descriptionImages.append(url)
+                descriptionImage = url
             }
         } else if elementName == "media:content" {
             if let url = attributeDict["url"] {
@@ -65,13 +65,15 @@ class XMLParseManager: NSObject, XMLParserDelegate {
     
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         if elementName == "item" {
-           rssItems.append(RSSItem(title: itemTitle, description: itemDescription, pubDate: itemPubDate, descriptionImages: descriptionImages, mediaImages: mediaImages))
+            DatabaseManager.shared.addItem(itemTitle: itemTitle, itemDescription: itemDescription, itemPubDate: itemPubDate, imageUrl: descriptionImage)
         }
     }
     
     func parserDidEndDocument(_ parser: XMLParser) {
+        DatabaseManager.shared.getFetchetResultController()
+        
         if let parseCompletionHandler = parseCompletionHandler {
-            parseCompletionHandler(rssItems)
+            parseCompletionHandler()
         }
     }
     
