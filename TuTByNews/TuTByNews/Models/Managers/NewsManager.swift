@@ -8,11 +8,12 @@
 import Foundation
 
 class NewsManager: NSObject {
-    
+        
     
     // MARK: -Properties
     
     static let shared = NewsManager()
+    
     
     // MARK: -Methods
     
@@ -28,6 +29,8 @@ class NewsManager: NSObject {
                 guard let feedInXml = feedInXml else {
                     return
                 }
+                
+                DatabaseManager.shared.cleanUpDatabase()
                 
                 if let completion = completion {
                     completion(feedInXml)
