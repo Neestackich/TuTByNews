@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="false" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19H2" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="RSSItem" representedClassName="RSSItem" syncable="YES">
+        <attribute name="imageUrl" optional="YES" attributeType="String"/>
+        <attribute name="itemDescription" optional="YES" attributeType="String"/>
+        <attribute name="itemPubDate" optional="YES" attributeType="String"/>
+        <attribute name="itemTitle" optional="YES" attributeType="String"/>
+        <attribute name="titleImage" optional="YES" attributeType="Binary"/>
+    </entity>
+    <elements>
+        <element name="RSSItem" positionX="-63" positionY="-18" width="128" height="118"/>
+    </elements>
 </model>
