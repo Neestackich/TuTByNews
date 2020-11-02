@@ -9,7 +9,6 @@
 import Foundation
 import CoreData
 
-
 extension RSSItem {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<RSSItem> {
