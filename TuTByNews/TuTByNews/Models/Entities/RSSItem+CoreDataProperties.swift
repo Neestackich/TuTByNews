@@ -1,6 +1,5 @@
 //
-//  RSSItem+CoreDataProperties.swift
-//  
+//  RSSItem+CoreDataProperties.swift 
 //
 //  Created by Neestackich on 11/2/20.
 //
