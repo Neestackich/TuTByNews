@@ -1,8 +1,8 @@
 //
 //  RSSItem+CoreDataProperties.swift
-//  TuTByNews
+//  
 //
-//  Created by Neestackich on 10/30/20.
+//  Created by Neestackich on 11/2/20.
 //
 //
 
@@ -16,14 +16,11 @@ extension RSSItem {
         return NSFetchRequest<RSSItem>(entityName: "RSSItem")
     }
 
-    @NSManaged public var itemTitle: String?
+    @NSManaged public var imageUrl: String?
     @NSManaged public var itemDescription: String?
     @NSManaged public var itemPubDate: String?
+    @NSManaged public var itemTitle: String?
+    @NSManaged public var tagged: Bool
     @NSManaged public var titleImage: Data?
-    @NSManaged public var imageUrl: String?
-
-}
-
-extension RSSItem : Identifiable {
 
 }

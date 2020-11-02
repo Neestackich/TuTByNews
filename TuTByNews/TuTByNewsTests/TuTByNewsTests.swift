@@ -7,8 +7,13 @@
 
 import XCTest
 
+@testable import TuTByNews
+
 class TuTByNewsTests: XCTestCase {
 
+    
+    var sessionUnderTest: URlSession!
+    
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }

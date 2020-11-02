@@ -1,8 +1,8 @@
 //
 //  RSSItem+CoreDataClass.swift
-//  TuTByNews
+//  
 //
-//  Created by Neestackich on 10/30/20.
+//  Created by Neestackich on 11/2/20.
 //
 //
 
