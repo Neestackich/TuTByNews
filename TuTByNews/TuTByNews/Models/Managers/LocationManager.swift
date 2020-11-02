@@ -22,15 +22,26 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     }
     
     func getLocation() {
-        let authorizationStatus = CLLocationManager.authorizationStatus()
+        var authorizationStatus = CLLocationManager.authorizationStatus()
         
-        if authorizationStatus == .authorizedWhenInUse {
+        switch authorizationStatus {
+        case .authorizedWhenInUse:
             locationManager.startUpdatingLocation()
             isValidLocation()
-        } else {
+        case .authorizedAlways:
+            locationManager.startUpdatingLocation()
+            isValidLocation()
+        case .denied:
             locationManager.requestWhenInUseAuthorization()
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "false"), object: nil)
             
+        default:
+            locationManager.requestWhenInUseAuthorization()
         }
+    }
+    
+    func requestAuthorization() {
+        locationManager.requestWhenInUseAuthorization()
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
@@ -41,18 +52,23 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         if let location = locationManager.location {
             let geocoder = CLGeocoder()
             geocoder.reverseGeocodeLocation(location) { [] placeMark, error in
-                guard let placeMark = placeMark?.first else {
-                    return
-                }
                 
-                if let countryCode = placeMark.isoCountryCode {
-                    if countryCode == "RU" {
-                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "true"), object: nil)
-                    } else {
-                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "false"), object: nil)
+                if let error = error {
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "impossible"), object: nil)
+                } else {
+                    guard let placeMark = placeMark?.first else {
+                        return
                     }
                     
-                    print(countryCode)
+                    if let countryCode = placeMark.isoCountryCode {
+                        if countryCode == "BLR" {
+                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "true"), object: nil)
+                        } else {
+                            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "false"), object: nil)
+                        }
+                        
+                        print(countryCode)
+                    }
                 }
             }
         }
