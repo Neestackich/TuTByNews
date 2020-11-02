@@ -16,7 +16,8 @@ class DatabaseManager: NSObject, NSFetchedResultsControllerDelegate {
     static let shared = DatabaseManager()
     private var appDelegate: AppDelegate!
     private var context: NSManagedObjectContext!
-    private var fetchetResultController: NSFetchedResultsController<RSSItem>!
+    private(set) var fetchetResultController: NSFetchedResultsController<RSSItem>!
+    
     
     // MARK: -Methods
     
@@ -32,20 +33,11 @@ class DatabaseManager: NSObject, NSFetchedResultsControllerDelegate {
             let rssItem = NSManagedObject(entity: entity, insertInto: context) as! RSSItem
             rssItem.itemTitle = itemTitle
             rssItem.itemDescription = itemDescription
-            rssItem.itemPubDate = itemPubDate
             rssItem.imageUrl = imageUrl
+            rssItem.tagged = false
             
-            let url = URL(string: imageUrl)
-            
-            if let url = url {
-                let imageDownloadTask = URLSession.shared.dataTask(with: url) { [weak rssItem] data, response, error in
-                    if let data = data {
-                        rssItem?.titleImage = data
-                    }
-                }
-                
-                imageDownloadTask.resume()
-            }
+            let cleanedString = itemPubDate.replacingOccurrences(of: "\n\t\t", with: "")
+            rssItem.itemPubDate = cleanedString
 
             do {
                 try context.save()
@@ -80,35 +72,55 @@ class DatabaseManager: NSObject, NSFetchedResultsControllerDelegate {
         do {
             try fetchetResultController?.performFetch()
         } catch {
-            print("error")
+            print("Fetch error")
         }
+        
+        isDatabaseEmpty()
+        
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "dataLoaded"), object: nil)
     }
     
     func cleanUpDatabase() {
-        if !isDatabaseEmpty() {
-            if fetchetResultController == nil {
-                getFetchetResultController()
-            }
-    
-            if let items = getItems() {
-                for item in items {
-                    do {
-                        try context.delete(item)
-                        
-                        saveContext()
-                    } catch {
-                        print("delete error")
-                    }
-                }
-                
-                print("deleted")
+        //работает через раз
+//        if !isDatabaseEmpty() {
+//            if let items = getItems() {
+//                for item in (fetchetResultController?.fetchedObjects)! {
+//                    do {
+//                        try context.delete(item)
+//
+//                        saveContext()
+//                    } catch {
+//                        print("delete error")
+//                    }
+//                }
+//
+//                print("deleted")
+//            }
+//
+//            fetchetResultController = nil
+//        }
+        
+        let fetchRequest: NSFetchRequest<RSSItem> = RSSItem.fetchRequest()
+        var items: [RSSItem] = []
+        
+        do {
+            items = try context.fetch(fetchRequest)
+        } catch {
+            print("Fetch error")
+        }
+        
+        do {
+            for item in items {
+                try context.delete(item)
             }
             
-            fetchetResultController = nil
+            saveContext()  
+        } catch {
+            print("Delete error")
         }
     }
     
-    private func saveContext() {
+    func saveContext() {
         if context.hasChanges {
             do {
                 try context.save()
@@ -124,11 +136,11 @@ class DatabaseManager: NSObject, NSFetchedResultsControllerDelegate {
         }
         
         if fetchetResultController.fetchedObjects?.count == 0 {
-            print("\n\nEMPTY\n\n")
+            print("EMPTY")
             
             return true
         } else {
-            print("\n\nELEMENTS QUANTITY: \(String(describing: fetchetResultController.fetchedObjects?.count))\n\n")
+            print("ELEMENTS QUANTITY: \(String(describing: fetchetResultController.fetchedObjects?.count))")
             
             return false
         }
