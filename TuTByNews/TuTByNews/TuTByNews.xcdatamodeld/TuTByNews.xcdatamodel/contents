@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19H2" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Entity" representedClassName="Entity" syncable="YES" codeGenerationType="class"/>
     <entity name="RSSItem" representedClassName="RSSItem" syncable="YES">
         <attribute name="imageUrl" optional="YES" attributeType="String"/>
         <attribute name="itemDescription" optional="YES" attributeType="String"/>
         <attribute name="itemPubDate" optional="YES" attributeType="String"/>
         <attribute name="itemTitle" optional="YES" attributeType="String"/>
+        <attribute name="tagged" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="titleImage" optional="YES" attributeType="Binary"/>
     </entity>
     <elements>
-        <element name="RSSItem" positionX="-63" positionY="-18" width="128" height="118"/>
+        <element name="RSSItem" positionX="-63" positionY="-18" width="128" height="133"/>
+        <element name="Entity" positionX="-63" positionY="27" width="128" height="43"/>
     </elements>
 </model>
