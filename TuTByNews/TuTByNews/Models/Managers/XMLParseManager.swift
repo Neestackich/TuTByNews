@@ -84,12 +84,19 @@ class XMLParseManager: NSObject, XMLParserDelegate {
         case "description":
             itemDescription += string
         case "pubDate":
-            itemPubDate += string
+            itemPubDate += getDate(dateString: string)
         case "media:content":
             break
         default:
             break
         }
+    }
+    
+    func getDate(dateString: String) -> String {
+        let date = Date()
+        let parsedDate = date.getFormattedDate(dateToParse: dateString)
+        
+        return parsedDate
     }
     
     func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
