@@ -52,6 +52,7 @@ class FeedItemCollectionViewCell: UICollectionViewCell {
             if let imageUrl = imageUrl {
                 let imageDownloadTask = URLSession.shared.dataTask(with: imageUrl) { [weak self] data, response, error in
                     if let data = data {
+                        guard let url = self?.imageUrl, url == imageUrl.absoluteString else { return }
                         DispatchQueue.main.async {
                             print("Downloaded!")
                             let image = UIImage(data: data)
